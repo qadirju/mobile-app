@@ -23,12 +23,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.ui.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
+    viewModel: TaskViewModel,
     onBackClick: () -> Unit,
-    onTaskAdded: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val taskTitleState = remember { mutableStateOf("") }
@@ -92,7 +93,10 @@ fun AddTaskScreen(
             Button(
                 onClick = {
                     if (taskTitleState.value.isNotEmpty()) {
-                        onTaskAdded(taskTitleState.value)
+                        viewModel.insertTask(
+                            title = taskTitleState.value,
+                            description = taskDescriptionState.value
+                        )
                         onBackClick()
                     }
                 },
