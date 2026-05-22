@@ -37,9 +37,13 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
         }
     }
 
-    fun deleteTask(task: TaskEntity) {
+    fun addTask(title: String) {
+        insertTask(title, "")
+    }
+
+    fun deleteTask(id: Int) {
         viewModelScope.launch {
-            repository.deleteTask(task)
+            repository.deleteTaskById(id)
         }
     }
 

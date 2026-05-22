@@ -14,9 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.data.database.AppDatabase
 import com.example.myapplication.data.repository.TaskRepository
 import com.example.myapplication.ui.navigation.NavRoutes
-import com.example.myapplication.ui.screens.AddTaskScreen
-import com.example.myapplication.ui.screens.HomeScreen
-import com.example.myapplication.ui.screens.ProfileScreen
+import com.example.myapplication.ui.screens.TaskManagerScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.viewmodel.TaskViewModel
 import com.example.myapplication.ui.viewmodel.TaskViewModelFactory
@@ -38,7 +36,6 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    // Initialize database, repository and factory using remember to avoid re-initialization on recomposition
     val viewModelFactory = remember(context) {
         val database = AppDatabase.getInstance(context)
         val repository = TaskRepository(database.taskDao())
@@ -47,37 +44,11 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = NavRoutes.Home.route
+        startDestination = NavRoutes.TaskManager.route
     ) {
-        composable(NavRoutes.Home.route) {
+        composable(NavRoutes.TaskManager.route) {
             val taskViewModel: TaskViewModel = viewModel(factory = viewModelFactory)
-            HomeScreen(
-                viewModel = taskViewModel,
-                onNavigateToAddTask = {
-                    navController.navigate(NavRoutes.AddTask.route)
-                },
-                onNavigateToProfile = {
-                    navController.navigate(NavRoutes.Profile.route)
-                }
-            )
-        }
-
-        composable(NavRoutes.AddTask.route) {
-            val taskViewModel: TaskViewModel = viewModel(factory = viewModelFactory)
-            AddTaskScreen(
-                viewModel = taskViewModel,
-                onBackClick = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(NavRoutes.Profile.route) {
-            ProfileScreen(
-                onBackClick = {
-                    navController.popBackStack()
-                }
-            )
+            TaskManagerScreen(viewModel = taskViewModel)
         }
     }
 }

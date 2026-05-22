@@ -95,7 +95,7 @@ fun HomeScreen(
                                 viewModel.updateTask(task.copy(isCompleted = isChecked))
                             },
                             onTaskDelete = {
-                                viewModel.deleteTask(task)
+                                viewModel.deleteTask(task.id)
                             }
                         )
                     }
