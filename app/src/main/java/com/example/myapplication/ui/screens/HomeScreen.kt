@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.data.entity.TaskEntity
+import com.example.myapplication.ui.components.Task
 import com.example.myapplication.ui.components.TaskItem
 import com.example.myapplication.ui.viewmodel.TaskViewModel
 
@@ -38,7 +39,7 @@ fun HomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            // Header with Navigation Buttons
+            // Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -51,12 +52,8 @@ fun HomeScreen(
                     fontSize = 24.sp
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(onClick = onNavigateToProfile) {
-                        Text("Profile")
-                    }
+                Button(onClick = onNavigateToProfile) {
+                    Text("Profile")
                 }
             }
 
@@ -73,15 +70,11 @@ fun HomeScreen(
             // Task List Section
             if (tasks.isEmpty()) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        "No tasks yet. Add one to get started!",
-                        fontSize = 16.sp
-                    )
+                    Text("No tasks yet. Add one to get started!", fontSize = 16.sp)
                 }
             } else {
                 LazyColumn(
@@ -90,15 +83,15 @@ fun HomeScreen(
                 ) {
                     items(
                         items = tasks,
-                        key = { task -> task.id }
+                        key = { it.id }
                     ) { task ->
                         TaskItem(
-                            task = object : com.example.myapplication.ui.components.Task {
-                                override val id: Int = task.id
-                                override val title: String = task.title
-                                override val description: String = task.description
-                                override val isCompleted: Boolean = task.isCompleted
-                            },
+                            task = Task(
+                                id = task.id,
+                                title = task.title,
+                                description = task.description,
+                                isCompleted = task.isCompleted
+                            ),
                             onTaskChecked = { isChecked ->
                                 viewModel.updateTask(task.copy(isCompleted = isChecked))
                             },
@@ -112,4 +105,3 @@ fun HomeScreen(
         }
     }
 }
-

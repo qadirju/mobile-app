@@ -5,8 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -26,20 +27,23 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                AppNavigation(this)
+                AppNavigation()
             }
         }
     }
 }
 
 @Composable
-fun AppNavigation(context: android.content.Context) {
+fun AppNavigation() {
     val navController = rememberNavController()
+    val context = LocalContext.current
 
-    // Initialize database and repository
-    val database = AppDatabase.getInstance(context)
-    val repository = TaskRepository(database.taskDao())
-    val viewModelFactory = TaskViewModelFactory(repository)
+    // Initialize database and repository using remember to avoid re-initialization on recomposition
+    val viewModelFactory = remember(context) {
+        val database = AppDatabase.getInstance(context)
+        val repository = TaskRepository(database.taskDao())
+        TaskViewModelFactory(repository)
+    }
 
     NavHost(
         navController = navController,
