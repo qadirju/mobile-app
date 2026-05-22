@@ -38,7 +38,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    // Initialize database and repository using remember to avoid re-initialization on recomposition
+    // Initialize database, repository and factory using remember to avoid re-initialization on recomposition
     val viewModelFactory = remember(context) {
         val database = AppDatabase.getInstance(context)
         val repository = TaskRepository(database.taskDao())
