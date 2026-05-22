@@ -2,14 +2,18 @@ package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,6 +23,8 @@ import com.example.myapplication.ui.components.TaskList
 
 @Composable
 fun HomeScreen(
+    onNavigateToAddTask: () -> Unit,
+    onNavigateToProfile: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // State management - hoisted to top level
@@ -34,12 +40,27 @@ fun HomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            // Header
-            Text(
-                text = "Student Task Manager",
-                fontSize = 24.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            // Header with Navigation Buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Student Task Manager",
+                    fontSize = 24.sp
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(onClick = onNavigateToProfile) {
+                        Text("Profile")
+                    }
+                }
+            }
 
             // Add Task Section
             AddTaskSection(
@@ -59,6 +80,16 @@ fun HomeScreen(
                     }
                 }
             )
+
+            // Navigate to Add Task Screen Button
+            Button(
+                onClick = onNavigateToAddTask,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
+                Text("Add Task (Navigation)")
+            }
 
             // Task List Section
             TaskList(
