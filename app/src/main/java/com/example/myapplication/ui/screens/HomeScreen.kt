@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.data.entity.TaskEntity
 import com.example.myapplication.ui.components.Task
 import com.example.myapplication.ui.components.TaskItem
 import com.example.myapplication.ui.viewmodel.TaskViewModel
