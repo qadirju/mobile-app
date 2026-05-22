@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -177,7 +178,8 @@ fun TaskRow(
                 Text(
                     text = task.title,
                     modifier = Modifier.padding(start = 8.dp),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
                 )
             }
 
