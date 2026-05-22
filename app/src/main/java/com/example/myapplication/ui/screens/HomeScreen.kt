@@ -4,74 +4,76 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.myapplication.ui.components.AddTaskSection
 import com.example.myapplication.ui.components.Task
-import com.example.myapplication.ui.components.TaskItem
+import com.example.myapplication.ui.components.TaskList
 
 @Composable
 fun HomeScreen(
-    onAddTaskClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tasks = remember { mutableStateOf(listOf<Task>()) }
+    // State management - hoisted to top level
+    val tasks = remember { mutableStateListOf<Task>() }
+    val taskInputState = remember { mutableStateOf("") }
+    val taskIdCounter = remember { mutableStateOf(0) }
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onAddTaskClick,
-                icon = { Icon(Icons.Filled.Add, contentDescription = "Add Task") },
-                text = { Text("Add Task") }
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(8.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.Top
         ) {
+            // Header
             Text(
-                text = "My Tasks",
+                text = "Student Task Manager",
+                fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            if (tasks.value.isEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-                ) {
-                    Text("No tasks yet. Add one to get started!")
-                }
-            } else {
-                LazyColumn {
-                    items(tasks.value) { task ->
-                        TaskItem(
-                            task = task,
-                            onTaskChecked = { isChecked ->
-                                tasks.value = tasks.value.map {
-                                    if (it.id == task.id) it.copy(isCompleted = isChecked) else it
-                                }
-                            }
+            // Add Task Section
+            AddTaskSection(
+                inputValue = taskInputState.value,
+                onInputChange = { taskInputState.value = it },
+                onAddClick = {
+                    if (taskInputState.value.isNotEmpty()) {
+                        tasks.add(
+                            Task(
+                                id = taskIdCounter.value,
+                                title = taskInputState.value,
+                                isCompleted = false
+                            )
                         )
+                        taskIdCounter.value++
+                        taskInputState.value = ""
                     }
                 }
-            }
+            )
+
+            // Task List Section
+            TaskList(
+                tasks = tasks,
+                onTaskToggle = { taskId, isCompleted ->
+                    val index = tasks.indexOfFirst { it.id == taskId }
+                    if (index != -1) {
+                        tasks[index] = tasks[index].copy(isCompleted = isCompleted)
+                    }
+                },
+                onTaskDelete = { taskId ->
+                    tasks.removeAll { it.id == taskId }
+                }
+            )
         }
     }
 }
+
